@@ -1,0 +1,21 @@
+spring:
+  main:
+    web-application-type: none
+  datasource:
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 2
+    driver: org.postgresql.Driver
+    url: ${DB_URL:jdbc:postgresql://172.20.0.10:5432/}
+    username: ${DB_USERNAME:pagerank}
+    password: ${DB_PASSWORD:pagerank}
+  liquibase:
+    change-log: db/changelog/changelog.xml
+
+graph:
+  url: ${GRAPH_URL:https://dl.dropboxusercontent.com/s/zpt048s2k5h21l5/graph.gv?dl=0} # graph location
+  iteration-limit: ${ITERATION_LIMIT:3} # The total number of iterations of the PageRank algorithm (>= 1)
+  damping-factor: ${DAMPING_FACTOR:0.85} # damping factor of the PageRank algorithm (>= 0 and <= 1)
+  mapper: ${MAPPER:true} # this instance is a mapper worker (true/false)
+  reducer: ${REDUCER:true} # this instance is a reducer worker (true/false)
+

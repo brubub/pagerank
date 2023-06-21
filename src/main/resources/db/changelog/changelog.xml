@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.19.xsd">
+
+    <changeSet id="1" author="Bruno Budris">
+        <createTable tableName="iteration">
+            <column name="iteration" type="number(3)" remarks="iteration number of PageRank algorithm">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ready" type="boolean" remarks="iteration is ready for map processing">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mapped" type="boolean" remarks="iteration is ready for reduce processing">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reduced" type="boolean" remarks="iteration processing completed">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="iteration" columnNames="iteration" constraintName="iteration_pk"/>
+
+        <createTable tableName="page_rank">
+            <column name="vertex_id" type="number(10)" remarks="graph vertex id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iteration" type="number(3)" remarks="iteration number of the PageRank vertex value">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rank" type="number(30,30)" remarks="vertex rank">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="page_rank" columnNames="vertex_id,iteration" constraintName="page_rank_pk"/>
+
+        <createTable tableName="map_vote">
+            <column name="source_id" type="number(10)" remarks="source vertex id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_id" type="number(10)" remarks="target vertex id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iteration" type="number(3)" remarks="iteration number of PageRank algorithm">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vote" type="number(30,30)" remarks="vertex rank">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="map_vote" columnNames="source_id,target_id,iteration" constraintName="map_vote_pk"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,53 @@
+services:
+  app:
+    image: anafter/pagerank
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - pagerank-network
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      DB_URL: jdbc:postgresql://172.20.0.10:5432/
+      DB_USERNAME: pagerank
+      DB_PASSWORD: pagerank
+
+  db:
+    image: postgres
+    container_name: pagerank-db
+    restart: always
+    environment:
+      POSTGRES_DB: pagerank
+      POSTGRES_USER: pagerank
+      POSTGRES_PASSWORD: pagerank
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    volumes:
+      - pagerank-data:/var/lib/postgresql/data
+    networks:
+      pagerank-network:
+        ipv4_address: 172.20.0.10
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+networks:
+  pagerank-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  pagerank-data:
